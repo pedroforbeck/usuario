@@ -1,7 +1,8 @@
 package com.javapr.usuario.infrastructure.security;
 
-import com.projetospring.java.infrastructure.entity.Usuario;
-import com.projetospring.java.infrastructure.repository.UsuarioRepository;
+
+import com.javapr.usuario.infrastructure.entity.Usuario;
+import com.javapr.usuario.infrastructure.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
