@@ -29,7 +29,7 @@ public class JwtUtil {
 
     // Extrai as claims do token JWT (informações adicionais do token)
     public Claims extractClaims(String token) {
-        return Jwts.parser()
+        return Jwts.parserBuilder()
                 .setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8))) // Define a chave secreta para validar a assinatura do token
                 .build()
                 .parseClaimsJws(token) // Analisa o token JWT e obtém as claims
