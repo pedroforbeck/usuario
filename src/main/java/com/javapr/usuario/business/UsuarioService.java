@@ -6,6 +6,7 @@ import com.javapr.usuario.infrastructure.entity.Usuario;
 import com.javapr.usuario.infrastructure.exeptcions.ConflictException;
 import com.javapr.usuario.infrastructure.exeptcions.ResourceNotFoundException;
 import com.javapr.usuario.infrastructure.repository.UsuarioRepository;
+import com.javapr.usuario.infrastructure.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,8 +18,9 @@ public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final UsuarioConverter usuarioConverter;
     private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
-    public UsuarioDTO salvaUsuario(UsuarioDTO usuarioDTO){
+    public UsuarioDTO salvaUsuario(UsuarioDTO usuarioDTO) {
         emailExist(usuarioDTO.getEmail());
         usuarioDTO.setSenha(passwordEncoder.encode(usuarioDTO.getSenha()));
         Usuario usuario = usuarioConverter.paraUsuario(usuarioDTO);
@@ -29,19 +31,37 @@ public class UsuarioService {
         if (verificaEmailExiste(email)) {
             throw new ConflictException("Email already in use: " + email);
         }
-    }
 
+    }
 
 
     public boolean verificaEmailExiste(String email) {
         return usuarioRepository.existsByEmail(email);
     }
 
-    public Usuario buscarUsuarioPorEmail(String email){
+    public Usuario buscarUsuarioPorEmail(String email) {
         return usuarioRepository.findByEmail(email).orElseThrow(
                 () -> new ResourceNotFoundException("Email inexistente " + email));
     }
-    public void deletaUsuarioPorEmail(String email){
+
+    public void deletaUsuarioPorEmail(String email) {
         usuarioRepository.deleteByEmail(email);
+    }
+
+
+    public UsuarioDTO atualizaDadosUsuario(String token, UsuarioDTO dto) {
+        //Busca email por token
+        String email = jwtUtil.extractUsername(token.substring(7));
+
+        //Criptografia de Senha
+        dto.setSenha(dto.getSenha() != null ? passwordEncoder.encode(dto.getSenha()) : null);
+        //Busca dados no banco
+        Usuario usuarioEntity = usuarioRepository.findByEmail(email).orElseThrow(() ->
+                new ResourceNotFoundException("Email inexistente " + email));
+        //Mesclou os dados com os dados no banco
+        Usuario usuario = usuarioConverter.updateUsuario(dto, usuarioEntity);
+
+        return usuarioConverter.paraUsuarioDTO(usuarioRepository.save(usuario));
+
     }
 }
