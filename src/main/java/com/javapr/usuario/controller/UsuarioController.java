@@ -62,7 +62,7 @@ public class UsuarioController {
     }
 
     @PutMapping("/telefone")
-    public ResponseEntity<TelefoneDTO> cadastraTelefone(@RequestBody TelefoneDTO dto,
+    public ResponseEntity<TelefoneDTO> atualizaTelefone(@RequestBody TelefoneDTO dto,
                                                         @RequestParam("id") Long id) {
         return ResponseEntity.ok(usuarioService.atualizaTelefone(id, dto));
 
