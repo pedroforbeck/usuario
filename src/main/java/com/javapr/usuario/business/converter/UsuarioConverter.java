@@ -24,8 +24,10 @@ public class UsuarioConverter {
                 .nome(usuarioDTO.getNome())
                 .email(usuarioDTO.getEmail())
                 .senha(usuarioDTO.getSenha())
-                .endereco(paraListaEndereco(usuarioDTO.getEnderecos()))
-                .telefone(paraListaTelefones(usuarioDTO.getTelefones()))
+                .endereco(usuarioDTO.getEnderecos() != null ?
+                        paraListaEndereco(usuarioDTO.getEnderecos()) : null)
+                .telefone(usuarioDTO.getTelefones() != null ?
+                        paraListaTelefones(usuarioDTO.getTelefones()) : null)
                 .build();
     }
 
@@ -66,13 +68,15 @@ public class UsuarioConverter {
     // DE ENTIDADE PARA DTO
     // ==========================================
 
-    public UsuarioDTO paraUsuarioDTO(Usuario usuario) {
+    public UsuarioDTO paraUsuarioDTO(Usuario usuarioDTO) {
         return UsuarioDTO.builder()
-                .nome(usuario.getNome())
-                .email(usuario.getEmail())
-                .senha(usuario.getSenha())
-                .enderecos(paraListaEnderecoDTO(usuario.getEndereco()))
-                .telefones(paraListaTelefonesDTO(usuario.getTelefone()))
+                .nome(usuarioDTO.getNome())
+                .email(usuarioDTO.getEmail())
+                .senha(usuarioDTO.getSenha())
+                .enderecos(usuarioDTO.getEndereco() != null ?
+                        paraListaEnderecoDTO(usuarioDTO.getEndereco()) : null)
+                .telefones(usuarioDTO.getTelefone() != null ?
+                        paraListaTelefonesDTO(usuarioDTO.getTelefone()) : null)
                 .build();
     }
 
