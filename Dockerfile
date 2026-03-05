@@ -1,11 +1,14 @@
-FROM gradle:7.6-eclipse-temurin-17 AS BUILD
+FROM eclipse-temurin:17-jdk-alpine AS build
 WORKDIR /app
+
 COPY . .
-run gradle build --no-daemon
+RUN chmod +x gradlew
+RUN ./gradlew build --no-daemon -x test
+
 FROM eclipse-temurin:17-jdk-alpine
 WORKDIR /app
 
-COPY --from=build /app/build/*.jar /app/usuario.jar
+COPY --from=build /app/build/libs/*.jar /app/usuario.jar
 
 EXPOSE 8080
 
