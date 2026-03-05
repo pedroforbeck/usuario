@@ -1,9 +1,11 @@
 package com.javapr.usuario.controller;
 
 import com.javapr.usuario.business.UsuarioService;
+import com.javapr.usuario.business.ViaCepService;
 import com.javapr.usuario.business.dto.EnderecoDTO;
 import com.javapr.usuario.business.dto.TelefoneDTO;
 import com.javapr.usuario.business.dto.UsuarioDTO;
+import com.javapr.usuario.infrastructure.clients.ViaCepDTO;
 import com.javapr.usuario.infrastructure.security.JwtUtil;
 import com.javapr.usuario.infrastructure.security.SecurityConfig;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,6 +30,7 @@ public class UsuarioController {
     private final UsuarioService usuarioService;
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
+    public final ViaCepService viaCepService;
 
     @PostMapping
     @Operation(summary = "Cadastra usuário", description = "Cadastra usuário")
@@ -131,6 +134,11 @@ public class UsuarioController {
                                                         @RequestHeader("Authorization") String token) {
         return ResponseEntity.ok(usuarioService.cadastraTelefone(token, dto));
 
+    }
+
+    @GetMapping("/endereco/{cep}")
+    public ResponseEntity<ViaCepDTO> buscaViaCep(@PathVariable("cep") String cep) {
+        return ResponseEntity.ok(viaCepService.buscaDadosEndereco(cep));
     }
 
 }
