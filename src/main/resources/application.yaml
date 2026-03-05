@@ -7,3 +7,6 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: update
+
+viacep:
+  url: https://viacep.com.br

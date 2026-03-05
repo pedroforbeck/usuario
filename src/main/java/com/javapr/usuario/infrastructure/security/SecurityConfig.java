@@ -1,5 +1,7 @@
 package com.javapr.usuario.infrastructure.security;
 
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +20,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@SecurityScheme(name = SecurityConfig.SECURITY_SCHEME, type = SecuritySchemeType.HTTP,
+        bearerFormat = "JWT", scheme = "bearer")
 public class SecurityConfig {
+
+    public static final String SECURITY_SCHEME = "bearerAuth";
 
     // Instâncias de JwtUtil e UserDetailsService injetadas pelo Spring
     private final JwtUtil jwtUtil;
@@ -40,9 +46,12 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable) // Desativa proteção CSRF para APIs REST (não aplicável a APIs que não mantêm estado)
                 .authorizeHttpRequests(authorize -> authorize
+
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         .requestMatchers("/usuario/login").permitAll() // Permite acesso ao endpoint de login sem autenticação
                         .requestMatchers(HttpMethod.GET, "/auth").permitAll()// Permite acesso ao endpoint GET /auth sem autenticação
                         .requestMatchers(HttpMethod.POST, "/usuario").permitAll() // Permite acesso ao endpoint POST /usuario sem autenticação
+                        .requestMatchers(HttpMethod.GET, "/usuario/endereco/**").permitAll()
                         .requestMatchers("/usuario/**").authenticated() // Requer autenticação para qualquer endpoint que comece com /usuario/
                         .anyRequest().authenticated() // Requer autenticação para todas as outras requisições
                 )
